@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# This script receives a list of parameters, name of files, to backup to Google Drive. You can use it with a
-# cronjob to setup it daily, weekly, etc. It uses drive command line tool to upload the files to drive.
+# This script receives a list of parameters, name of files, to backup to Google
+# Drive. You can use it with a cronjob to setup it daily, weekly, etc. It uses
+# drive command line tool to upload the files to drive.
 
 # Ensures drive command line tool is installed.
 if ! command -v drive &> /dev/null; then
@@ -28,7 +29,17 @@ mkdir $BACKUP_DIR
 # Parses arguments and locate files to backup and copy them to backup directory.
 for FILE in "$@"
 do
-    cp $FILE $BACKUP_DIR
+    if [[ -d $FILE ]]; then
+        # If it is a directory make a copy of every file inside it to a
+        # directory with same name on the backup directory.
+        cp -d -r $FILE $BACKUP_DIR
+    elif [[ -f $FILE ]]; then
+        # If it is a file copy the file to the backup directory.
+        cp $FILE $BACKUP_DIR
+    else
+        echo "file $FILE is not valid"
+        exit 1
+    fi
 done
 
 # Push backup directory to google drive.
