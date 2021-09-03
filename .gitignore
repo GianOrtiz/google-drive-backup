@@ -1,0 +1,2 @@
+# Prevent upload of service account files.
+*.json

@@ -16,7 +16,7 @@ if ! command -v drive &> /dev/null; then
     go get -u github.com/odeke-em/drive/cmd/drive
 fi
 
-drive init ~/.gdrive
+drive init --service-account-file $SERVICE_ACCOUNT_FILE ~/.gdrive
 
 cd ~/.gdrive
 # Create new directory for the backup.
