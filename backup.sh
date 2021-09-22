@@ -4,11 +4,24 @@
 # Drive. You can use it with a cronjob to setup it daily, weekly, etc. It uses
 # drive command line tool to upload the files to drive.
 
+help () {
+    echo "Create a cheap backup using Google Drive."
+    echo
+    echo "Syntax: backup.sh [--no-prompt] files"
+    echo "options:"
+    echo "--no-prompt   Disable prompt (prooced with the changes)"
+    echo
+}
+
 # Parse files and no prompt flag in command arguments.
 FILES=()
 NO_PROMPT=false
 while (( $# > 0 )); do
     case "$1" in
+        -h )
+            help
+            exit 0
+            ;;
         --no-prompt )
             NO_PROMPT=true
             ;;
