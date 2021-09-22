@@ -4,6 +4,21 @@
 # Drive. You can use it with a cronjob to setup it daily, weekly, etc. It uses
 # drive command line tool to upload the files to drive.
 
+# Parse files and no prompt flag in command arguments.
+FILES=()
+NO_PROMPT=false
+while (( $# > 0 )); do
+    case "$1" in
+        --no-prompt )
+            NO_PROMPT=true
+            ;;
+        * )
+            FILES+=("$1")
+        ;;
+    esac
+    shift
+done
+
 # Ensures drive command line tool is installed.
 if ! command -v drive &> /dev/null; then
     echo "drive is not installed, installing it..."
@@ -23,11 +38,10 @@ cd ~/.gdrive
 # Create new directory for the backup.
 FORMATTED_DATE=$(date +"%Y-%m-%d-%H-%M-%S")
 BACKUP_DIR="backup_$FORMATTED_DATE"
-echo $BACKUP_DIR
 mkdir $BACKUP_DIR
 
-# Parses arguments and locate files to backup and copy them to backup directory.
-for FILE in "$@"
+# Copy files and directories to the backup directory.
+for FILE in "${FILES[@]}"
 do
     if [[ -d $FILE ]]; then
         # If it is a directory make a copy of every file inside it to a
@@ -43,4 +57,8 @@ do
 done
 
 # Push backup directory to google drive.
-drive push $BACKUP_DIR
+if $NO_PROMPT; then
+    drive push --no-prompt $BACKUP_DIR
+else
+    drive push $BACKUP_DIR
+fi
